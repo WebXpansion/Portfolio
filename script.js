@@ -15,17 +15,18 @@ let loadedMediaCount = 0;
 function loadImages() {
   for (let i = 1; i <= 7; i++) {
     const img = new Image();
-    img.src = `/assets/img${i}.jpg`;     // <— vos fichiers JPG/PNG
+    img.src = `/assets/img${i}.jpg`;
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       images.push(img);
       loadedMediaCount++;
-      if (loadedMediaCount === 1) initializeScene();
+      // lance la scène seulement quand toutes les images sont chargées
+      if (loadedMediaCount === 7) initializeScene();
     };
     img.onerror = () => {
       console.warn(`Image ${i} introuvable.`);
       loadedMediaCount++;
-      if (loadedMediaCount === 1) initializeScene();
+      if (loadedMediaCount === 7) initializeScene();
     };
   }
 }
