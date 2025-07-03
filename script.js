@@ -9,27 +9,33 @@ window.addEventListener("load", () => {
   
 
 // 1) Préchargement des images
-const images = [];
+const totalSlides = 7;
+const images = new Array(totalSlides);
 let loadedMediaCount = 0;
 
 function loadImages() {
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 1; i <= totalSlides; i++) {
     const img = new Image();
-    img.src = `/assets/img${i}.jpg`;
+    img.src         = `/assets/img${i}.jpg`;
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      images.push(img);
+      images[i - 1] = img;                // on stocke à l’indice i-1
       loadedMediaCount++;
-      // lance la scène seulement quand toutes les images sont chargées
-      if (loadedMediaCount === 7) initializeScene();
+      if (loadedMediaCount === totalSlides) {
+        initializeScene();
+      }
     };
     img.onerror = () => {
       console.warn(`Image ${i} introuvable.`);
+      images[i - 1] = null;
       loadedMediaCount++;
-      if (loadedMediaCount === 7) initializeScene();
+      if (loadedMediaCount === totalSlides) {
+        initializeScene();
+      }
     };
   }
 }
+
 
   
 
@@ -104,7 +110,7 @@ function loadImages() {
     }
     parentGeometry.computeVertexNormals();
 
-    const totalSlides = 7;
+
     const slideHeight = 15;
     const gap = 0.5;
     const cycleHeight = totalSlides * (slideHeight + gap);
