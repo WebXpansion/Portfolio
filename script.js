@@ -7,23 +7,27 @@ window.addEventListener("load", () => {
   requestAnimationFrame(raf);
   const videos = [];
   let loadedMediaCount = 0;
-  
+
   function loadVideos() {
     for (let i = 1; i <= 7; i++) {
       const vid = document.createElement('video');
       vid.src = `./assets/video${i}.mp4`;
-      vid.crossOrigin    = 'anonymous';
-      vid.muted          = true;
-      vid.autoplay       = true;
-      vid.loop           = false;
-      vid.playsInline    = true;
-      vid.setAttribute('playsinline', '');
-      vid.setAttribute('webkit-playsinline', '');
+      vid.crossOrigin     = 'anonymous';
+      vid.muted           = true;             // indispensable sur mobile
+      vid.autoplay        = true;             // indispensable sur mobile
+      vid.loop            = false;
+      vid.playsInline     = true;             // iOS Safari
+      vid.setAttribute('playsinline','');     // iOS Safari
+      vid.setAttribute('webkit-playsinline',''); // anciens iOS
+      vid.preload         = 'auto';           // précharge
+      // fallback poster (optionnel) :
+      // vid.poster = 'https://ton-site.com/wp-content/uploads/assets/fallback.jpg';
   
+      // remettre à 0 avant fin pour simuler loop très smooth
       vid.addEventListener("timeupdate", () => {
         if (vid.duration - vid.currentTime < 0.05) {
           vid.currentTime = 0;
-          vid.play().catch(() => {});
+          vid.play().catch(()=>{});
         }
       });
   
@@ -31,14 +35,8 @@ window.addEventListener("load", () => {
         videos.push(vid);
         loadedMediaCount++;
         if (loadedMediaCount === 1) initializeScene();
-        // ici on fait le catch
-        vid.play().catch(err => {
-          if (err.name !== 'AbortError') {
-            console.error("Erreur de lecture vidéo :", err);
-          }
-        });
+        vid.play().catch(()=>{});
       });
-  
       vid.addEventListener('error', () => {
         console.warn(`Vidéo ${i} introuvable ou illisible.`);
         loadedMediaCount++;
@@ -47,19 +45,22 @@ window.addEventListener("load", () => {
     }
   }
   
+  
 
   const dragSpeed = 2; 
 
 
   function initializeScene() {
-
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|Opera Mini/i
+    .test(navigator.userAgent);
+    
     let autoRotateActive = true;
     const autoRotateSpeed = 0.00002;
-    let isScaledDown = false; 
+    let isScaledDown = false;
     let scaleResetTimeout;
-    const scaleResetDelay = 100;  // 100 ms d’attente au lieu de 150
-    const shrinkDur       = 0.15; // 150 ms pour shrink
-    const resetDur        = 0.4;  // 300 ms pour rebound
+    const scaleResetDelay = 100;
+    const shrinkDur = 0.15;
+    const resetDur  = 0.4;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
@@ -85,11 +86,14 @@ window.addEventListener("load", () => {
     const renderPass = new THREE.RenderPass(scene, camera);
     composer.addPass(renderPass);
 
-    // AfterimagePass : plus 'damp' est bas, plus la traînée est longue
-// Pass #1 : flou léger
-const after = new THREE.AfterimagePass();
-after.uniforms["damp"].value = 0.75;   // ajuste entre 0.5 (traînée longue) et 0.95 (très court)
-composer.addPass(after);
+    let afterPass;
+    if (!isMobile) {
+      // Sur desktop uniquement, on ajoute le motion-blur
+      afterPass = new THREE.AfterimagePass();
+      afterPass.uniforms["damp"].value = 0.75;
+      composer.addPass(afterPass);
+    }
+
 
 
 
@@ -367,30 +371,29 @@ canvasEl.addEventListener("pointercancel", e => {
 
     let prevTime = 0;
     function animate(time) {
-      
-      // 1) auto-scroll si personne n’a interagi
+      // a) auto‐scroll
       if (autoRotateActive) {
         const delta = time - prevTime;
         currentScroll = (currentScroll + delta * autoRotateSpeed) % 1;
       }
-    
-      // 2) keep Lenis if you need it elsewhere
+      prevTime = time;
+  
+      // b) Lenis
       lenis.raf(time);
-    
-      // 3) mise à jour du slider
-     updateTexture(-currentScroll);
-
-      if (autoRotateActive) {
-        // pendant l’auto-rotation : pas de blur
+  
+      // c) update slide
+      updateTexture(-currentScroll);
+  
+      // d) rendu
+      if (isMobile || autoRotateActive) {
+        // mobile ou auto‐rotate → render normal
         renderer.render(scene, camera);
       } else {
-        // dès qu’on interagit : motion blur via composer
-        renderer.clear();       // vide le frame buffer
-        composer.render();      // puis applique ton afterimage
+        // desktop après interaction → motion‐blur
+        renderer.clear();
+        composer.render();
       }
-    
-      // 4) next frame
-      prevTime = time;
+  
       requestAnimationFrame(animate);
     }
     
