@@ -84,10 +84,9 @@ window.addEventListener("load", () => {
 
     // AfterimagePass : plus 'damp' est bas, plus la traînée est longue
 // Pass #1 : flou léger
-const after1 = new THREE.AfterimagePass();
-after1.uniforms["damp"].value = 0.72;
-composer.addPass(after1);
-
+const after = new THREE.AfterimagePass();
+after.uniforms["damp"].value = 0.75;   // ajuste entre 0.5 (traînée longue) et 0.95 (très court)
+composer.addPass(after);
 
 
 
@@ -383,7 +382,8 @@ canvasEl.addEventListener("pointercancel", e => {
         renderer.render(scene, camera);
       } else {
         // dès qu’on interagit : motion blur via composer
-        composer.render();
+        renderer.clear();       // vide le frame buffer
+        composer.render();      // puis applique ton afterimage
       }
     
       // 4) next frame
