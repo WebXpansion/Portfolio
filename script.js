@@ -11,25 +11,29 @@ window.addEventListener("load", () => {
   function loadVideos() {
     for (let i = 1; i <= 7; i++) {
       const vid = document.createElement('video');
-      vid.src = `./assets/video${i}.mov`;   // ou config.mov, selon ton naming
+      vid.src = `./assets/video${i}.mov`;
       vid.crossOrigin = 'anonymous';
-      vid.muted = true;                     // pour autoplay en boucle sans interaction
+      vid.muted = true;
       vid.loop = false;
       vid.playsInline = true;
   
       vid.addEventListener("timeupdate", () => {
         if (vid.duration - vid.currentTime < 0.05) {
           vid.currentTime = 0;
-          vid.play();
+          vid.play().catch(() => {});
         }
       });
-
-      // Quand assez de données sont chargées pour jouer
+  
       vid.addEventListener('loadeddata', () => {
         videos.push(vid);
         loadedMediaCount++;
         if (loadedMediaCount === 1) initializeScene();
-        vid.play();                         // lance la lecture
+        // ici on fait le catch
+        vid.play().catch(err => {
+          if (err.name !== 'AbortError') {
+            console.error("Erreur de lecture vidéo :", err);
+          }
+        });
       });
   
       vid.addEventListener('error', () => {
@@ -39,6 +43,7 @@ window.addEventListener("load", () => {
       });
     }
   }
+  
 
   const dragSpeed = 2; 
 
