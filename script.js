@@ -44,7 +44,10 @@ function loadImages() {
   function initializeScene() {
     // détection mobile
     const canvasEl = document.querySelector('canvas');
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent);
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent);
+
+  const dragFactor  = isMobile ? 1     : 2;
+
   
     // paramètres slider
     const totalSlides     = images.length;
@@ -167,15 +170,16 @@ function loadImages() {
   
     // scroll & drag
     let isDragging=false, startY=0;
-    const wheelFactor = 0.0005;
-    window.addEventListener("wheel", e=>{
+    const wheelFactor = isMobile ? 0.0002 : 0.0005;
+    
+    window.addEventListener("wheel", e => {
       e.preventDefault();
-      autoRotateActive=false;
-      currentScroll = (currentScroll + e.deltaY*wheelFactor) % 1;
-      if (currentScroll<0) currentScroll+=1;
+      autoRotateActive = false;
+      currentScroll = (currentScroll + e.deltaY * wheelFactor) % 1;
+      if (currentScroll < 0) currentScroll += 1;
       updateTexture(-currentScroll);
-      renderer.render(scene,camera);
-    }, { passive:false });
+      renderer.render(scene, camera);
+    }, { passive: false });
   
    // juste après avoir créé ton renderer :
 const cv = renderer.domElement;
@@ -194,9 +198,10 @@ cv.style.touchAction = 'none'; // bloque le scroll natif sur mobile
     cv.addEventListener("pointermove", e => {
       if (!isDragging) return;
       e.preventDefault();
-      const d = startY - e.clientY;
+      const delta = startY - e.clientY;
       startY = e.clientY;
-      currentScroll = (currentScroll + d * wheelFactor * dragSpeed) % 1;
+      // on remplace dragSpeed par dragFactor et wheelFactor déjà adapté
+      currentScroll = (currentScroll + delta * wheelFactor * dragFactor) % 1;
       if (currentScroll < 0) currentScroll += 1;
       updateTexture(-currentScroll);
       renderer.render(scene, camera);
