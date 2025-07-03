@@ -11,7 +11,7 @@ window.addEventListener("load", () => {
   function loadVideos() {
     for (let i = 1; i <= 7; i++) {
       const vid = document.createElement('video');
-      vid.src = `./assets/video${i}.mov`;
+      vid.src = `./assets/video${i}.mp4`;
       vid.crossOrigin = 'anonymous';
       vid.muted = true;
       vid.loop = false;
