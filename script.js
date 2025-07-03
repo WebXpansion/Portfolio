@@ -12,10 +12,13 @@ window.addEventListener("load", () => {
     for (let i = 1; i <= 7; i++) {
       const vid = document.createElement('video');
       vid.src = `./assets/video${i}.mp4`;
-      vid.crossOrigin = 'anonymous';
-      vid.muted = true;
-      vid.loop = false;
-      vid.playsInline = true;
+      vid.crossOrigin    = 'anonymous';
+      vid.muted          = true;
+      vid.autoplay       = true;
+      vid.loop           = false;
+      vid.playsInline    = true;
+      vid.setAttribute('playsinline', '');
+      vid.setAttribute('webkit-playsinline', '');
   
       vid.addEventListener("timeupdate", () => {
         if (vid.duration - vid.currentTime < 0.05) {
