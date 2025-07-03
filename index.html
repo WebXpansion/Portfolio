@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ThreeJS 3D Slider | Codegrid</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+
+    <!--<div id="us-bg" data-us-project="lp3nEIwJhdOZcrimz078" style="width:100%; height: 100%"></div><script type="text/javascript">!function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.26/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();</script>
+
+    
+
+  <div id="us-bg" data-us-project="eidGLoiomVLb0AOGLZf8" style="width:100%; height: 100%"></div><script type="text/javascript">!function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.26/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();</script>
+-->
+
+<div  id="us-bg" data-us-project="Z6SmuqLFANMNNnr8HS1g"  style="width:100%; height: 100%"></div><script type="text/javascript">!function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.26/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();</script>  <nav>
+      <div class="site-info">
+        <p id="logo">WebXpansion</p>
+        <p>Site Internet & Expérience 3D</p>
+      </div>
+      <div class="nav-links">
+        <p>Index</p>
+        <p>About</p>
+      </div>
+    </nav>
+
+    <footer>
+      <p>Experiment 0410</p>
+      <p>&copy; 2025</p>
+    </footer>
+
+    <div class="slider-wrapper">
+      <canvas></canvas>
+    </div>
+
+    <div class="overlay"></div>
+
+<!-- Three.js core -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- Post-processing base class -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+
+<!-- Shader dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+
+<!-- ShaderPass (pour copier les passes) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+
+<!-- EffectComposer et RenderPass -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+
+<!-- ---- AJOUT À FAIRE : AfterimageShader ---- -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/AfterimageShader.js"></script>
+
+<!-- AfterimagePass (le pass de flou de mouvement) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/AfterimagePass.js"></script>
+
+<!-- Scrolling & animation libs -->
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.27/bundled/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<!-- Ton script principal -->
+<script src="./script.js"></script>
+
+
+
+    <script>
+      !function(){
+        if(!window.UnicornStudio){
+          window.UnicornStudio={isInitialized:!1};
+          var i=document.createElement("script");
+          i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.26/dist/unicornStudio.umd.js";
+          i.onload=function(){
+            if(!window.UnicornStudio.isInitialized){
+              UnicornStudio.init();
+              window.UnicornStudio.isInitialized=!0;
+            }
+          };
+          (document.head||document.body).appendChild(i);
+        }
+      }();
+    </script>
+  </body>
+</html>

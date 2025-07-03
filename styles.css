@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 1000vh;
+  font-family: "Inter";
+  color: #fff;
+  background: transparent;
+}
+
+p {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 0.5;
+}
+
+p#logo {
+  opacity: 1;
+}
+
+nav {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  padding: 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2em;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  padding: 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+}
+
+.slider-wrapper {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgb(0, 0, 0);
+  background: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0) 75%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+#bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1; /* derrière le canvas (z-index auto = 0) */
+}
+
+/* 1) On laisse body en scroll long, mais on prend notre bg en full viewport */
+#us-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;        /* 100% de la largeur de la fenêtre */
+  height: 100vh;       /* 100% de la hauteur de la fenêtre */
+  overflow: hidden;    /* coupe tout ce qui dépasse */
+  z-index: -1;         /* derrière le canvas et l’overlay */
+}
+
+/* 2) L’embed lui-même prend 100% de son parent (#us-bg) */
+#us-bg > div {
+  width: 100%;
+  height: 100%;
+}
+
+/* 3) Pour être sûr que le rendu (canvas interne de Unicorn) se comporte en cover */
+#us-bg canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: 100%;
+  /* ou, si ça déborde en hauteur, swap width/height :
+     height: auto;
+     width: 100%; */
+  object-fit: cover;
+}
