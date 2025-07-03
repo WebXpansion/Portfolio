@@ -43,6 +43,7 @@ function loadImages() {
 
   function initializeScene() {
     // détection mobile
+    const canvasEl = document.querySelector('canvas');
     const isMobile = /Android|webOS|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent);
   
     // paramètres slider
@@ -176,22 +177,41 @@ function loadImages() {
       renderer.render(scene,camera);
     }, { passive:false });
   
-    const cv = renderer.domElement;
-    cv.addEventListener("pointerdown", e=>{
-      isDragging=true; autoRotateActive=false;
-      startY=e.clientY;
-    });
-    cv.addEventListener("pointermove", e=>{
-      if(!isDragging) return;
+   // juste après avoir créé ton renderer :
+const cv = renderer.domElement;
+cv.style.touchAction = 'none'; // bloque le scroll natif sur mobile
+
+
+
+
+    cv.addEventListener("pointerdown", e => {
+      isDragging = true;
+      autoRotateActive = false;
+      startY = e.clientY;
+      cv.setPointerCapture(e.pointerId);
+    }, { passive: false });
+
+    cv.addEventListener("pointermove", e => {
+      if (!isDragging) return;
+      e.preventDefault();
       const d = startY - e.clientY;
       startY = e.clientY;
-      currentScroll = (currentScroll + d*wheelFactor*dragSpeed) % 1;
-      if (currentScroll<0) currentScroll+=1;
+      currentScroll = (currentScroll + d * wheelFactor * dragSpeed) % 1;
+      if (currentScroll < 0) currentScroll += 1;
       updateTexture(-currentScroll);
-      renderer.render(scene,camera);
-    });
-    cv.addEventListener("pointerup",   ()=> isDragging=false);
-    cv.addEventListener("pointercancel",()=> isDragging=false);
+      renderer.render(scene, camera);
+    }, { passive: false });
+
+    cv.addEventListener("pointerup", e => {
+      isDragging = false;
+      cv.releasePointerCapture(e.pointerId);
+    }, { passive: false });
+
+    cv.addEventListener("pointercancel", e => {
+      isDragging = false;
+      cv.releasePointerCapture(e.pointerId);
+    }, { passive: false });
+
   
     // auto-scroll + render loop
     let prevTime = performance.now();
