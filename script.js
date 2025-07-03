@@ -5,46 +5,52 @@ window.addEventListener("load", () => {
     requestAnimationFrame(raf);
   }
   requestAnimationFrame(raf);
-  const videos = [];
-  let loadedMediaCount = 0;
 
-  function loadVideos() {
-    for (let i = 1; i <= 7; i++) {
-      const vid = document.createElement('video');
-      vid.src = `./assets/video${i}.mp4`;
-      vid.crossOrigin     = 'anonymous';
-      vid.muted           = true;             // indispensable sur mobile
-      vid.autoplay        = true;             // indispensable sur mobile
-      vid.loop            = false;
-      vid.playsInline     = true;             // iOS Safari
-      vid.setAttribute('playsinline','');     // iOS Safari
-      vid.setAttribute('webkit-playsinline',''); // anciens iOS
-      vid.preload         = 'auto';           // précharge
-      // fallback poster (optionnel) :
-      // vid.poster = 'https://ton-site.com/wp-content/uploads/assets/fallback.jpg';
   
-      // remettre à 0 avant fin pour simuler loop très smooth
-      vid.addEventListener("timeupdate", () => {
-        if (vid.duration - vid.currentTime < 0.05) {
-          vid.currentTime = 0;
-          vid.play().catch(()=>{});
-        }
-      });
-  
-      vid.addEventListener('loadeddata', () => {
-        videos.push(vid);
-        loadedMediaCount++;
-        if (loadedMediaCount === 1) initializeScene();
+
+  const videos = [];
+let loadedMediaCount = 0;
+
+function loadVideos() {
+  for (let i = 1; i <= 7; i++) {
+    const vid = document.createElement('video');
+    vid.src             = `/assets/video${i}.mp4`;
+    vid.crossOrigin     = 'anonymous';
+    vid.muted           = true;
+    vid.autoplay        = true;
+    vid.loop            = false;
+    vid.playsInline     = true;
+    vid.setAttribute('playsinline','');
+    vid.setAttribute('webkit-playsinline','');
+    vid.preload         = 'auto';
+    vid.style.display   = 'none';
+    document.body.appendChild(vid);
+
+    vid.addEventListener("timeupdate", () => {
+      if (vid.duration - vid.currentTime < 0.05) {
+        vid.currentTime = 0;
         vid.play().catch(()=>{});
-      });
-      vid.addEventListener('error', () => {
-        console.warn(`Vidéo ${i} introuvable ou illisible.`);
-        loadedMediaCount++;
-        if (loadedMediaCount === 1) initializeScene();
-      });
-    }
+      }
+    });
+    vid.addEventListener('loadeddata', () => {
+      videos.push(vid);
+      loadedMediaCount++;
+      if (loadedMediaCount === 1) initializeScene();
+      // on ne joue plus ici, on attend le toucher
+    });
+    vid.addEventListener('error', () => {
+      console.warn(`Vidéo ${i} introuvable ou illisible.`);
+      loadedMediaCount++;
+      if (loadedMediaCount === 1) initializeScene();
+    });
   }
-  
+
+  // Dès le premier toucher/utilisateur
+  document.body.addEventListener("pointerdown", () => {
+    videos.forEach(v => v.play().catch(()=>{}));
+  }, { once: true });
+}
+
   
 
   const dragSpeed = 2; 
