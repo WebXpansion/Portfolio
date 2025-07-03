@@ -8,47 +8,26 @@ window.addEventListener("load", () => {
 
   
 
-  const videos = [];
+// 1) Préchargement des images
+const images = [];
 let loadedMediaCount = 0;
 
-function loadVideos() {
+function loadImages() {
   for (let i = 1; i <= 7; i++) {
-    const vid = document.createElement('video');
-    vid.src             = `/assets/video${i}.mp4`;
-    vid.crossOrigin     = 'anonymous';
-    vid.muted           = true;
-    vid.autoplay        = true;
-    vid.loop            = false;
-    vid.playsInline     = true;
-    vid.setAttribute('playsinline','');
-    vid.setAttribute('webkit-playsinline','');
-    vid.preload         = 'auto';
-    vid.style.display   = 'none';
-    document.body.appendChild(vid);
-
-    vid.addEventListener("timeupdate", () => {
-      if (vid.duration - vid.currentTime < 0.05) {
-        vid.currentTime = 0;
-        vid.play().catch(()=>{});
-      }
-    });
-    vid.addEventListener('loadeddata', () => {
-      videos.push(vid);
+    const img = new Image();
+    img.src = `/assets/img${i}.jpg`;     // <— vos fichiers JPG/PNG
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      images.push(img);
       loadedMediaCount++;
       if (loadedMediaCount === 1) initializeScene();
-      // on ne joue plus ici, on attend le toucher
-    });
-    vid.addEventListener('error', () => {
-      console.warn(`Vidéo ${i} introuvable ou illisible.`);
+    };
+    img.onerror = () => {
+      console.warn(`Image ${i} introuvable.`);
       loadedMediaCount++;
       if (loadedMediaCount === 1) initializeScene();
-    });
+    };
   }
-
-  // Dès le premier toucher/utilisateur
-  document.body.addEventListener("pointerdown", () => {
-    videos.forEach(v => v.play().catch(()=>{}));
-  }, { once: true });
 }
 
   
@@ -218,52 +197,48 @@ function loadVideos() {
         if (wrappedY < 0) wrappedY += textureCanvas.height;
     
         const slideIndex = ((-i % totalSlides) + totalSlides) % totalSlides;
-        const vid = videos[slideIndex];
-    
         const slideRect = {
           x: textureCanvas.width * 0.05,
-          y: wrappedY,                            // ← maintenant défini
+          y: wrappedY,
           width: textureCanvas.width * 0.9,
           height: (slideHeight / cycleHeight) * textureCanvas.height,
         };
-    
-        if (vid && vid.readyState >= 2) {
-          const vidAspect = vid.videoWidth / vid.videoHeight;
+        const img = images[slideIndex];
+        if (img) {
+          const imgAspect  = img.width  / img.height;
           const rectAspect = slideRect.width / slideRect.height;
           let drawW, drawH, drawX, drawY;
-        
-          if (vidAspect > rectAspect) {
+          if (imgAspect > rectAspect) {
             drawH = slideRect.height;
-            drawW = drawH * vidAspect;
-            drawX = slideRect.x + (slideRect.width - drawW) / 2;
+            drawW = drawH * imgAspect;
+            drawX = slideRect.x + (slideRect.width - drawW)/2;
             drawY = slideRect.y;
           } else {
             drawW = slideRect.width;
-            drawH = drawW / vidAspect;
+            drawH = drawW / imgAspect;
             drawX = slideRect.x;
-            drawY = slideRect.y + (slideRect.height - drawH) / 2;
+            drawY = slideRect.y + (slideRect.height - drawH)/2;
           }
-        
           ctx.save();
-      ctx.beginPath();
-      ctx.roundRect(
-        slideRect.x, slideRect.y,
-        slideRect.width, slideRect.height
-      );
-      ctx.clip();
-      ctx.drawImage(vid, drawX, drawY, drawW, drawH);
-      ctx.restore();
-
-      // 2) draw the title with difference blend
-      ctx.save();
-      ctx.globalCompositeOperation = "difference";
-      ctx.fillStyle = "#ffffff";
-      ctx.fillText(
-        slideTitles[slideIndex],
-        paddingLeft,
-        wrappedY + slideRect.height - paddingBottom
-      );
-      ctx.restore();
+          ctx.beginPath();
+          ctx.roundRect(
+            slideRect.x, slideRect.y,
+            slideRect.width, slideRect.height
+          );
+          ctx.clip();
+          ctx.drawImage(img, drawX, drawY, drawW, drawH);
+          ctx.restore();
+    
+          // titre en mix-blend
+          ctx.save();
+          ctx.globalCompositeOperation = "difference";
+          ctx.fillStyle = "#ffffff";
+          ctx.fillText(
+            slideTitles[slideIndex],
+            paddingLeft,
+            wrappedY + slideRect.height - paddingBottom
+          );
+          ctx.restore();
         }
         
       }
@@ -408,6 +383,6 @@ canvasEl.addEventListener("pointercancel", e => {
  
   }
 
-  loadVideos();
+  loadImages();
 
 });
